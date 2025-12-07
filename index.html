@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>CHAT APP</h1>
+    <div id="messageDisplay" style="height: 50vh; width: 50vw; background-color: rgba(93, 157, 181, 0.575); margin-bottom: 20px;"></div>
+    <input type="text" placeholder="Type your message here" id="message" style="height: 8vh; width: 30vw">
+    <button onclick="sendMessage()">Send</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+    </script>
+</body>
+</html>
