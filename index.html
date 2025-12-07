@@ -14,6 +14,22 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+        const messageBox = document.getElementById('messageDisplay');
+        const messageInput = document.getElementById('message');
+
+        function sendMessage(){
+            const msg = messageInput.value;
+            socket.emit('message',msg);
+            messageInput.value = '';
+        }
+
+        socket.on('new-message',(data)=>{
+            const element = document.createElement('div');
+            element.textContent = data;
+            messageBox.appendChild(element);
+        })
+
+
     </script>
 </body>
 </html>
