@@ -1,40 +1,38 @@
 const express = require('express');
 const app = express();
-const { Server } = require("socket.io");
 const http = require('http');
 const path = require('path');
+const { Server } = require("socket.io");
 
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,'index.html'))
-});;
+// Serve static files if you add CSS/Images later, 
+// but for now we serve the index.html
+app.use(express.static(path.join(__dirname, 'public')));
 
-server.listen(3000,()=>{
-    console.log("Listening at port 3000");
-})
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
+io.on("connection", (socket) => {
+    console.log("A user connected: " + socket.id);
 
-io.on("connection", (socket)=>{
-    socket.on('message',(data)=>{
-        socket.broadcast.emit('new-message', data);
-    })
+    socket.on('join-room', (room) => {
+        socket.join(room);
+        console.log(`User joined room: ${room}`);
+    });
 
-    socket.on('disconnect', ()=>{
-        console.log("Disconnected from server");
-    })
-})
+    socket.on('message', ({ room, msg }) => {
+        // Broadcast to everyone in the room except the sender
+        socket.to(room).emit('new-message', msg);
+    });
 
+    socket.on("disconnect", () => {
+        console.log("User disconnected");
+    });
+});
 
-
-
-
-// //this is swebsocket 
-// const server = app.listen(3000,()=>{
-//     console.log("listening port at 3000");
-// })
-
-
-// //to build socket we have to build above the websocket 
-// const io = new Server(server);
+server.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
